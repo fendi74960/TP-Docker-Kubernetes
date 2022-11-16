@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels: 
+    app: userlistdemo
+    role: bd
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: userlist
+      role: bd    
+  template:
+    metadata:
+      labels:
+        app: userlist
+        role: bd
+    spec:
+      volumes:
+        - name : mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name:  init-db
+          configMap:
+            name: init-db
+      containers:
+      - name: mysql 
+        image: mysql:8.0.17
+        args: 
+          - "--default-authentication-plugin=mysql_native_password"
+#          - "--datadir=/var/lib/mysql/data"
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: mysql-secret
+        volumeMounts:
+          - name: mysql-data
+            mountPath: /var/lib/mysql
+          - name: init-db
+            mountPath: /docker-entrypoint-initdb.d/

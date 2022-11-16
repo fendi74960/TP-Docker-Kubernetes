@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: "mysql:8.0.11"
+    environment:
+        MYSQL_ROOT_PASSWORD_FILE: "/run/secrets/mysql/password"
+    secrets:
+      - source: mysql
+        target: mysql/password
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+        - "9906:3306"
+
+  userlist:
+    image: fendi74960/tp-info910:0.1.19
+    build:             
+      context: php
+      dockerfile: Dockerfile
+    secrets:
+      - source: mysql
+        target: mysql/password
+    ports:
+      - 9000:80
+    depends_on:
+      - mysql
+
+secrets:
+  mysql:
+    file: ./passwd

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels: 
+    app: userlistdemo
+    role: bd
+spec:
+  selector:
+    app: userlist
+    role: bd    
+  ports:
+  - port: 3306
+    targetPort: 3306

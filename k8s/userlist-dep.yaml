@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userlistdemo
+  labels: 
+    app: userlistdemo
+    role: front
+spec:
+  selector:
+    matchLabels:
+      app: userlist
+      role: front
+  template:
+    metadata:
+      labels:
+        app: userlist
+        role: front  
+    spec:
+      volumes:
+        - name: mysql-secret
+          secret:
+            secretName: mysql-secret
+            items: 
+              - key: password
+                path: password
+      containers:
+      - name: userlist
+        image: fendi74960/tp-info910:0.1.19
+
+        volumeMounts:
+          - name: mysql-secret
+            mountPath: "/run/secrets/mysql"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
