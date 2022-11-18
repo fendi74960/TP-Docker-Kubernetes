@@ -17,9 +17,10 @@ Pour lancer kubernetes:
 
 Pour lancer docker :
   Dans le dossier, faire :
+    docker compose build userlist
     docker compose up
 
-### Commandes et astuces utilisé:
+### Commandes et astuces utilisées:
 
 Pour générer un configmap, nous avons dans un premier temps créer un fichier init.mysql.
 Puis, nous avons executer la commande suivante:
